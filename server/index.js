@@ -75,15 +75,16 @@ app.post(`${prefix}/cart/`, (req, res) => {
 
 // REVIEWS
 app.get(`${prefix}/reviews/:product_id/list`, (req, res) => {
-  axios
-    .get(`${url}/reviews/${req.params.product_id}/list`, {
-      params: {
-        count: 20,
-        sort: "newest",
-      },
-    })
-    .then((response) => res.status(200).send(response.data))
-    .catch((err) => res.status(500).send(err));
+  res.send(sample.sampleReviews);
+  // axios
+  // .get(`${url}/reviews/${req.params.product_id}/list`, {
+  //   params: {
+  //     count: 20,
+  //     sort: "newest",
+  //   },
+  // })
+  // .then((response) => res.status(200).send(response.data))
+  // .catch((err) => res.status(500).send(err));
 });
 
 app.listen(port, () => {
