@@ -159,22 +159,6 @@ Related Products
   ]
 ```
 
-Cart List
-
-- Retrieves list of products added to the cart by a user.
-  > GET /cart/:user_session
-
-```sh
-[
-    {
-    id: 1,
-    user_session: 1234,
-    product_id: 1,
-    active: 1,
-  },
-]
-```
-
 Reviews
 
 - Returns a list of reviews for a particular product. This list does not include any reported reviews.
