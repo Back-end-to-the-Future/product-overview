@@ -1,0 +1,10 @@
+-- @block Bookmarked query
+-- @group Setup
+-- @name Drop_All_Tables
+
+DROP TABLE features;
+DROP TABLE skus;
+DROP TABLE photos;
+DROP TABLE styles;
+DROP TABLE products;
+

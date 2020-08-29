@@ -1,0 +1,84 @@
+-- @block Bookmarked query
+-- @group Setup
+-- @name Create_All_Tables
+
+CREATE TABLE products
+(
+  name VARCHAR (255),
+  slogan VARCHAR,
+  description VARCHAR,
+  category VARCHAR,
+  default_price VARCHAR
+);
+
+COPY products
+FROM '/Users/andrethomas/overview_module/csv_files/productData.csv'
+DELIMITER ','
+CSV HEADER;
+
+ALTER TABLE products
+  ADD COLUMN id SERIAL PRIMARY KEY;
+
+CREATE TABLE features
+(
+  feature VARCHAR,
+  value VARCHAR,
+  product_id INT REFERENCES products ON DELETE CASCADE
+);
+
+COPY features
+FROM '/Users/andrethomas/overview_module/csv_files/featuresData.csv'
+DELIMITER ','
+CSV HEADER;
+
+ALTER TABLE features
+  ADD COLUMN id SERIAL PRIMARY KEY;
+
+CREATE TABLE styles
+(
+  name VARCHAR,
+  original_price VARCHAR,
+  sale_price VARCHAR,
+  defaultStyle INT,
+  product_id INT REFERENCES products ON DELETE CASCADE
+);
+
+COPY styles
+FROM '/Users/andrethomas/overview_module/csv_files/stylesData.csv'
+DELIMITER ','
+CSV HEADER;
+
+ALTER TABLE styles
+  ADD COLUMN id SERIAL PRIMARY KEY;
+
+
+CREATE TABLE photos
+(
+  thumbnail_url VARCHAR,
+  url VARCHAR,
+  style_id INT REFERENCES styles ON DELETE CASCADE
+);
+
+COPY photos
+FROM '/Users/andrethomas/overview_module/csv_files/photosData.csv'
+DELIMITER ','
+CSV HEADER;
+
+ALTER TABLE photos
+  ADD COLUMN id SERIAL PRIMARY KEY;
+
+
+CREATE TABLE skus
+(
+  size VARCHAR,
+  quantity INT,
+  style_id INT REFERENCES styles ON DELETE CASCADE
+);
+
+COPY skus
+FROM '/Users/andrethomas/overview_module/csv_files/skusData.csv'
+DELIMITER ','
+CSV HEADER;
+
+ALTER TABLE skus
+  ADD COLUMN id SERIAL PRIMARY KEY;

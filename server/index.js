@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios").default;
 const sample = require("./sampleDataSDC.js");
+const pool = require("./db");
 
 const app = express();
 const bodyParser = require("body-parser");
@@ -23,16 +24,31 @@ app.get("/ov", (req, res) => {
 });
 
 // PRODUCTS
-app.get(`${prefix}/products/list`, (req, res) => {
-  res.send(sample.sampleProductList);
-  // axios
-  //   .get(`${url}/products/list`)
-  //   .then((response) => res.status(200).send(response.data))
-  //   .catch((err) => res.status(500).send(err));
+app.get(`${prefix}/products/list`, async (req, res) => {
+  pool
+    .query(
+      "SELECT id, name, slogan, description, category, default_price FROM products"
+    )
+    .then((result) => res.status(200).json(result.rows))
+    .catch((err) => res.status(500).send(err.message));
 });
 
-app.get(`${prefix}/products/:product_id/`, (req, res) => {
-  res.send(sample.sampleProductInformation);
+app.get(`${prefix}/products/:product_id/`, async (req, res) => {
+  const { product_id } = req.params;
+  pool
+    .query(
+      `SELECT products.id, name, slogan, description, category, default_price,
+        json_agg (json_build_object('feature', features.feature, 'value', features.value)) AS features
+      FROM products 
+      INNER JOIN features
+      ON products.id = features.product_id
+      WHERE products.id = $1
+      GROUP BY products.id;`,
+      [product_id]
+    )
+    .then((result) => res.status(200).json(result.rows[0]))
+    .catch((err) => res.status(500).send(err.message));
+
   // axios
   //   .get(`${url}/products/${req.params.product_id}`)
   //   .then((response) => res.status(200).send(response.data))
@@ -40,7 +56,37 @@ app.get(`${prefix}/products/:product_id/`, (req, res) => {
 });
 
 app.get(`${prefix}/products/:product_id/styles`, (req, res) => {
-  res.send(sample.sampleProductStyles);
+  const { product_id } = req.params;
+  pool
+    .query(
+      `SELECT products.id AS product_id, 
+        json_build_object(
+          'results', 
+          json_agg(
+            json_build_object('style_id', styles.id, 'name', styles.name, 'original_price', styles.original_price, 'sale_price', styles.sale_price, 'default?', "styles.default?", 
+            'skus', skus_list
+            )
+          )
+        ) AS style_list
+      FROM (
+        SELECT 
+          json_agg(
+            json_build_object(
+              size, quantity
+            )
+          ) AS skus_list
+        FROM styles
+        INNER JOIN skus ON styles.id = skus.style_id
+        GROUP BY styles.id
+      ) s
+      INNER JOIN styles ON products.id = styles.product_id
+      WHERE products.id = 1
+      GROUP BY products.id;`
+    )
+    .then((result) => res.status(200).json(result.rows[0]))
+    .catch((err) => res.status(500).json(err.message));
+
+  // res.status(200).send(sample.sampleProductStyles);
   // axios
   //   .get(`${url}/products/${req.params.product_id}/styles`)
   //   .then((response) => res.status(200).send(response.data))
@@ -48,11 +94,11 @@ app.get(`${prefix}/products/:product_id/styles`, (req, res) => {
 });
 
 app.get(`${prefix}/products/:product_id/related`, (req, res) => {
-  res.send(sample.sampleRelatedProducts);
-  // axios
-  //   .get(`${url}/products/${req.params.product_id}/related`)
-  //   .then((response) => res.status(200).send(response.data))
-  //   .catch((err) => res.status(500).send(err));
+  // res.status(200).send(sample.sampleRelatedProducts);
+  axios
+    .get(`${url}/products/${req.params.product_id}/related`)
+    .then((response) => res.status(200).send(response.data))
+    .catch((err) => res.status(500).send(err));
 });
 
 // CART
@@ -75,16 +121,15 @@ app.post(`${prefix}/cart/`, (req, res) => {
 
 // REVIEWS
 app.get(`${prefix}/reviews/:product_id/list`, (req, res) => {
-  res.send(sample.sampleReviews);
-  // axios
-  // .get(`${url}/reviews/${req.params.product_id}/list`, {
-  //   params: {
-  //     count: 20,
-  //     sort: "newest",
-  //   },
-  // })
-  // .then((response) => res.status(200).send(response.data))
-  // .catch((err) => res.status(500).send(err));
+  axios
+    .get(`${url}/reviews/${req.params.product_id}/list`, {
+      params: {
+        count: 20,
+        sort: "newest",
+      },
+    })
+    .then((response) => res.status(200).send(response.data))
+    .catch((err) => res.status(500).send(err));
 });
 
 app.listen(port, () => {

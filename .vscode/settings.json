@@ -1,0 +1,14 @@
+{
+  "sqltools.connections": [
+    {
+      "askForPassword": true,
+      "database": "overview_db",
+      "driver": "PostgreSQL",
+      "name": "overview_db",
+      "port": 5432,
+      "previewLimit": 50,
+      "server": "localhost",
+      "username": "postgres"
+    }
+  ]
+}
