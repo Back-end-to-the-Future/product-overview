@@ -18,6 +18,7 @@ CSV HEADER;
 
 ALTER TABLE products
   ADD COLUMN id SERIAL PRIMARY KEY;
+----------------------------------------------------------------------------
 
 CREATE TABLE features
 (
@@ -25,7 +26,6 @@ CREATE TABLE features
   value VARCHAR,
   product_id INT REFERENCES products ON DELETE CASCADE
 );
-
 COPY features
 FROM '/Users/andrethomas/overview_module/csv_files/featuresData.csv'
 DELIMITER ','
@@ -34,6 +34,10 @@ CSV HEADER;
 ALTER TABLE features
   ADD COLUMN id SERIAL PRIMARY KEY;
 
+CREATE INDEX features_product_id_idx
+ON features (product_id)
+
+----------------------------------------------------------------------------
 CREATE TABLE styles
 (
   name VARCHAR,
@@ -50,7 +54,7 @@ CSV HEADER;
 
 ALTER TABLE styles
   ADD COLUMN id SERIAL PRIMARY KEY;
-
+----------------------------------------------------------------------------
 
 CREATE TABLE photos
 (
@@ -67,10 +71,13 @@ CSV HEADER;
 ALTER TABLE photos
   ADD COLUMN id SERIAL PRIMARY KEY;
 
+CREATE INDEX photos_style_id_idx
+ON photos (style_id)
+----------------------------------------------------------------------------
 
 CREATE TABLE skus
 (
-  size VARCHAR,
+  size sizeType,
   quantity INT,
   style_id INT REFERENCES styles ON DELETE CASCADE
 );
@@ -82,3 +89,6 @@ CSV HEADER;
 
 ALTER TABLE skus
   ADD COLUMN id SERIAL PRIMARY KEY;
+
+CREATE INDEX skus_style_id_idx
+ON skus (style_id)

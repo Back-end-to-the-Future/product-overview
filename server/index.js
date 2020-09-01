@@ -7,6 +7,7 @@ const pool = require("./db");
 const app = express();
 const bodyParser = require("body-parser");
 const path = require("path");
+const { query } = require("./db");
 
 const port = 3333;
 const url = "http://52.26.193.201:3000";
@@ -48,49 +49,47 @@ app.get(`${prefix}/products/:product_id/`, async (req, res) => {
     )
     .then((result) => res.status(200).json(result.rows[0]))
     .catch((err) => res.status(500).send(err.message));
-
-  // axios
-  //   .get(`${url}/products/${req.params.product_id}`)
-  //   .then((response) => res.status(200).send(response.data))
-  //   .catch((err) => res.status(500).send(err));
 });
 
 app.get(`${prefix}/products/:product_id/styles`, (req, res) => {
   const { product_id } = req.params;
+  let stylesObject = {
+    product_id: `${product_id}`,
+    results: [],
+  };
+
   pool
     .query(
-      `SELECT products.id AS product_id, 
-        json_build_object(
-          'results', 
-          json_agg(
-            json_build_object('style_id', styles.id, 'name', styles.name, 'original_price', styles.original_price, 'sale_price', styles.sale_price, 'default?', "styles.default?", 
-            'skus', skus_list
-            )
-          )
-        ) AS style_list
+      `SELECT json_agg(row_to_json(results)) as results
       FROM (
-        SELECT 
-          json_agg(
-            json_build_object(
-              size, quantity
-            )
-          ) AS skus_list
-        FROM styles
-        INNER JOIN skus ON styles.id = skus.style_id
-        GROUP BY styles.id
-      ) s
-      INNER JOIN styles ON products.id = styles.product_id
-      WHERE products.id = 1
-      GROUP BY products.id;`
-    )
-    .then((result) => res.status(200).json(result.rows[0]))
-    .catch((err) => res.status(500).json(err.message));
 
-  // res.status(200).send(sample.sampleProductStyles);
-  // axios
-  //   .get(`${url}/products/${req.params.product_id}/styles`)
-  //   .then((response) => res.status(200).send(response.data))
-  //   .catch((err) => res.status(500).send(err));
+        SELECT id as style_id, name, trim(original_price) as original_price, trim(sale_price) as sale_price, defaultStyle as "default?",
+
+          (SELECT json_agg( row_to_json(photo)) as photos
+            FROM
+
+              (SELECT thumbnail_url, url
+              FROM photos
+              WHERE photos.style_id = styles.id
+              ) photo),
+
+              (SELECT
+                json_object_agg(size, quantity ORDER BY size
+                ) AS skus
+              FROM skus
+              WHERE skus.style_id = styles.id
+
+              )
+
+        FROM styles
+        WHERE product_id = ${product_id}
+      ) results`
+    )
+    .then((result) => {
+      stylesObject.results = result.rows[0].results;
+      res.status(200).json(stylesObject);
+    })
+    .catch((err) => res.status(500).json(err.message));
 });
 
 app.get(`${prefix}/products/:product_id/related`, (req, res) => {

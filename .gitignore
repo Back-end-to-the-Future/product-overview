@@ -24,4 +24,9 @@ coverage
 build/
 dist/
 
+# Database Access
 server/dbPass.js
+
+# CSV Data Files
+csv_files
+

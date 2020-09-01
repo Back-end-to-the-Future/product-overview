@@ -1,0 +1,60 @@
+SELECT json_agg(row_to_json(results)) as results
+FROM (
+    
+        SELECT id as style_id, name, trim(original_price) as original_price, trim(sale_price) as sale_price, defaultStyle as "default?",
+
+    (SELECT json_agg( row_to_json(photo)) as photos
+    FROM (
+              SELECT thumbnail_url, url
+      FROM photos
+      WHERE photos.style_id = styles.id
+              ) photo),
+
+    (SELECT
+      json_object_agg(size, quantity
+    ORDER BY size
+                ) AS skus
+  FROM skus
+  WHERE skus.style_id = styles.id
+
+              )
+             
+        FROM styles
+WHERE product_id = 3
+) results
+
+
+
+
+
+
+
+
+
+SELECT styles.id AS style_id, styles.name, trim(original_price) AS original_price, trim(sale_price) AS sale_price, defaultStyle AS "default?"
+FROM products
+  INNER JOIN styles
+  ON products.id = styles.product_id
+WHERE products.id = 3;
+
+SELECT thumbnail_url, url
+FROM styles
+  INNER JOIN photos
+  ON styles.id = photos.style_id
+WHERE styles.id = 4;
+
+SELECT size, quantity
+FROM styles
+  INNER JOIN skus
+  ON styles.id = skus.style_id
+WHERE style_id = 4
+
+SELECT features.feature, features.value
+FROM products
+  INNER JOIN features
+  ON products.id = features.product_id
+WHERE product_id = 3
+
+
+SELECT COUNT(*)
+FROM products
