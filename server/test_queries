@@ -20,13 +20,13 @@ FROM (
               )
              
         FROM styles
-WHERE product_id = 3
+WHERE styles.id IN (4, 5, 6)
 ) results
 
 
 
-
-
+SELECT COUNT (name)
+FROM products;
 
 
 
@@ -35,7 +35,11 @@ SELECT styles.id AS style_id, styles.name, trim(original_price) AS original_pric
 FROM products
   INNER JOIN styles
   ON products.id = styles.product_id
-WHERE products.id = 3;
+WHERE products.id = 1000000;
+
+SELECT styles.id
+FROM styles
+WHERE product_id = 1000;
 
 SELECT thumbnail_url, url
 FROM styles
@@ -58,3 +62,33 @@ WHERE product_id = 3
 
 SELECT COUNT(*)
 FROM products
+
+
+
+SELECT json_agg(row_to_json(results)) as results
+      FROM (
+
+        SELECT id as style_id, name, trim(original_price) as original_price, trim(sale_price) as sale_price, defaultStyle as "default?",
+
+          (SELECT json_agg( row_to_json(photo)) as photos
+            FROM
+
+              (SELECT thumbnail_url, url
+              FROM photos
+              WHERE photos.style_id = styles.id
+              ) photo),
+
+              (SELECT
+                json_object_agg(size, quantity ORDER BY size
+                ) AS skus
+              FROM skus
+              WHERE skus.style_id = styles.id
+
+              )
+
+        FROM styles
+        WHERE product_id = ${product_id}
+      ) results
+
+
+      

@@ -12,9 +12,10 @@ CREATE TABLE products
 );
 
 COPY products
-FROM '/Users/andrethomas/overview_module/csv_files/productData.csv'
+FROM '/Users/andrethomas/overview_module/csv_files/tenMillion/productsData10M.csv'
 DELIMITER ','
 CSV HEADER;
+
 
 ALTER TABLE products
   ADD COLUMN id SERIAL PRIMARY KEY;
@@ -27,15 +28,16 @@ CREATE TABLE features
   product_id INT REFERENCES products ON DELETE CASCADE
 );
 COPY features
-FROM '/Users/andrethomas/overview_module/csv_files/featuresData.csv'
+FROM '/Users/andrethomas/overview_module/csv_files/tenMillion/featuresData10M.csv'
 DELIMITER ','
 CSV HEADER;
+
 
 ALTER TABLE features
   ADD COLUMN id SERIAL PRIMARY KEY;
 
 CREATE INDEX features_product_id_idx
-ON features (product_id)
+ON features (product_id);
 
 ----------------------------------------------------------------------------
 CREATE TABLE styles
@@ -48,12 +50,15 @@ CREATE TABLE styles
 );
 
 COPY styles
-FROM '/Users/andrethomas/overview_module/csv_files/stylesData.csv'
+FROM '/Users/andrethomas/overview_module/csv_files/tenMillion/stylesData10M.csv'
 DELIMITER ','
 CSV HEADER;
 
 ALTER TABLE styles
   ADD COLUMN id SERIAL PRIMARY KEY;
+
+CREATE INDEX styles_product_id_idx
+ON styles (product_id);
 ----------------------------------------------------------------------------
 
 CREATE TABLE photos
@@ -64,15 +69,16 @@ CREATE TABLE photos
 );
 
 COPY photos
-FROM '/Users/andrethomas/overview_module/csv_files/photosData.csv'
+FROM '/Users/andrethomas/overview_module/csv_files/tenMillion/photosData10M.csv'
 DELIMITER ','
 CSV HEADER;
+
 
 ALTER TABLE photos
   ADD COLUMN id SERIAL PRIMARY KEY;
 
 CREATE INDEX photos_style_id_idx
-ON photos (style_id)
+ON photos (style_id);
 ----------------------------------------------------------------------------
 
 CREATE TABLE skus
@@ -83,7 +89,7 @@ CREATE TABLE skus
 );
 
 COPY skus
-FROM '/Users/andrethomas/overview_module/csv_files/skusData.csv'
+FROM '/Users/andrethomas/overview_module/csv_files/tenMillion/skusData10M.csv'
 DELIMITER ','
 CSV HEADER;
 
@@ -91,4 +97,5 @@ ALTER TABLE skus
   ADD COLUMN id SERIAL PRIMARY KEY;
 
 CREATE INDEX skus_style_id_idx
-ON skus (style_id)
+ON skus (style_id);
+---------------------------------------------------------------------

@@ -27,14 +27,15 @@ app.get("/ov", (req, res) => {
 // PRODUCTS
 app.get(`${prefix}/products/list`, async (req, res) => {
   pool
-    .query(
-      "SELECT id, name, slogan, description, category, default_price FROM products"
+  .query(
+    "SELECT id, name, slogan, description, category, default_price FROM products"
     )
     .then((result) => res.status(200).json(result.rows))
     .catch((err) => res.status(500).send(err.message));
-});
-
-app.get(`${prefix}/products/:product_id/`, async (req, res) => {
+  });
+  
+  app.get(`${prefix}/products/:product_id/`, async (req, res) => {
+  let start = Date.now()
   const { product_id } = req.params;
   pool
     .query(
@@ -47,7 +48,11 @@ app.get(`${prefix}/products/:product_id/`, async (req, res) => {
       GROUP BY products.id;`,
       [product_id]
     )
-    .then((result) => res.status(200).json(result.rows[0]))
+    .then((result) => {
+      let duration = Date.now() - start;
+      console.log(`Query took ${duration}ms`);
+      res.status(200).json(result.rows[0])
+    })
     .catch((err) => res.status(500).send(err.message));
 });
 
@@ -57,7 +62,7 @@ app.get(`${prefix}/products/:product_id/styles`, (req, res) => {
     product_id: `${product_id}`,
     results: [],
   };
-
+  let start = Date.now()
   pool
     .query(
       `SELECT json_agg(row_to_json(results)) as results
@@ -87,7 +92,10 @@ app.get(`${prefix}/products/:product_id/styles`, (req, res) => {
     )
     .then((result) => {
       stylesObject.results = result.rows[0].results;
+      let duration = Date.now() - start;
+      console.log(`Query took ${duration}ms`);
       res.status(200).json(stylesObject);
+      // res.status(200).json(result);
     })
     .catch((err) => res.status(500).json(err.message));
 });

@@ -3,9 +3,10 @@ const fs = require("fs");
 // ****************************************************************************
 // *** Products Table Generation ***
 const generateProducts = (productRecords) => {
+  let start = Date.now();
   let productsData = "name, slogan, description, category, default_price\n";
 
-  for (let i = 1; i <= productRecords; i++) {
+  for (let i = 2500001; i <= productRecords; i++) {
     let name = faker.commerce.productName();
     let slogan = faker.company.catchPhrase();
     let description = faker.commerce.productDescription();
@@ -17,14 +18,24 @@ const generateProducts = (productRecords) => {
     );
   }
 
-  fs.writeFile("./csv_files/productData.csv", productsData, "utf8", (err) => {
-    if (err) return console.log(err);
-    console.log("products written");
-  });
+  fs.appendFile(
+    "./csv_files/productData10.csv",
+    productsData,
+    "utf8",
+    (err) => {
+      if (err) return console.log(err);
+
+      console.log(
+        `Products written in: ${(Date.now() - start) / 1000} seconds.`
+      );
+    }
+  );
 };
 // ****************************************************************************
 // *** Features Table Generation ***
 const generateFeatures = (productRecords) => {
+  let start = Date.now();
+
   let featuresData = "feature, value, product_id\n";
 
   for (let i = 1; i <= productRecords; i++) {
@@ -38,9 +49,9 @@ const generateFeatures = (productRecords) => {
     }
   }
 
-  fs.writeFile("./csv_files/featuresData.csv", featuresData, "utf8", (err) => {
+  fs.writeFile("./csv_files/featuresData2.csv", featuresData, "utf8", (err) => {
     if (err) return console.log(err);
-    console.log("features written");
+    console.log(`Features written in: ${(Date.now() - start) / 1000} seconds.`);
   });
 };
 // ****************************************************************************
@@ -79,7 +90,7 @@ const generateStyles = (productRecords) => {
 // ****************************************************************************
 // *** Photos Table Generation ***
 const generatePhotos = (stylesCount) => {
-  // let photosData = "thumbnail_url, url, style_id\n";
+  let photosData = "thumbnail_url, url, style_id\n";
   let photosData = "";
 
   for (let i = 4000001; i <= stylesCount; i++) {
@@ -117,8 +128,8 @@ const generateSkus = (stylesCount) => {
     ],
   ];
 
-  // let skusData = "size, quantity, style_id\n";
-  let skusData = "";
+  let skusData = "size, quantity, style_id\n";
+  // let skusData = "";
   let optionsGroupCount = 0;
   let optionsGroupSize = 1;
   let skuOption = 0;
@@ -152,10 +163,11 @@ const generateSkus = (stylesCount) => {
 // ****************************************************************************
 // ****************************************************************************
 // RUN DATA GENERATION FUNCTIONS
-let totalProducts = 1000000;
+let totalProducts = 10000000;
+// generateProducts(totalProducts);
 // generateProducts(totalProducts);
 // generateFeatures(totalProducts);
 // let stylesCount = generateStyles(totalProducts);
 // console.log(stylesCount);
 // generatePhotos(4500000);
-generateSkus(4500000);
+// generateSkus(4500000);
