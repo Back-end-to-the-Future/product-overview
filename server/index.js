@@ -1,3 +1,4 @@
+require("newrelic");
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios").default;
@@ -27,15 +28,16 @@ app.get("/ov", (req, res) => {
 // PRODUCTS
 app.get(`${prefix}/products/list`, async (req, res) => {
   pool
-  .query(
-    "SELECT id, name, slogan, description, category, default_price FROM products"
+    .query(
+      "SELECT id, name, slogan, description, category, default_price FROM products"
     )
     .then((result) => res.status(200).json(result.rows))
     .catch((err) => res.status(500).send(err.message));
-  });
-  
-  app.get(`${prefix}/products/:product_id/`, async (req, res) => {
-  let start = Date.now()
+});
+
+app.get(`${prefix}/products/:product_id/`, async (req, res) => {
+  let start = Date.now();
+
   const { product_id } = req.params;
   pool
     .query(
@@ -51,7 +53,7 @@ app.get(`${prefix}/products/list`, async (req, res) => {
     .then((result) => {
       let duration = Date.now() - start;
       console.log(`Query took ${duration}ms`);
-      res.status(200).json(result.rows[0])
+      res.status(200).json(result.rows[0]);
     })
     .catch((err) => res.status(500).send(err.message));
 });
@@ -62,13 +64,14 @@ app.get(`${prefix}/products/:product_id/styles`, (req, res) => {
     product_id: `${product_id}`,
     results: [],
   };
-  let start = Date.now()
+  let start = Date.now();
   pool
     .query(
       `SELECT json_agg(row_to_json(results)) as results
       FROM (
 
-        SELECT id as style_id, name, trim(original_price) as original_price, trim(sale_price) as sale_price, defaultStyle as "default?",
+        SELECT id as style_id, name, trim(original_price) as original_price, trim(sale_price) 
+          as sale_price, defaultStyle as "default?",
 
           (SELECT json_agg( row_to_json(photo)) as photos
             FROM
@@ -95,7 +98,6 @@ app.get(`${prefix}/products/:product_id/styles`, (req, res) => {
       let duration = Date.now() - start;
       console.log(`Query took ${duration}ms`);
       res.status(200).json(stylesObject);
-      // res.status(200).json(result);
     })
     .catch((err) => res.status(500).json(err.message));
 });

@@ -68,7 +68,8 @@ FROM products
 SELECT json_agg(row_to_json(results)) as results
       FROM (
 
-        SELECT id as style_id, name, trim(original_price) as original_price, trim(sale_price) as sale_price, defaultStyle as "default?",
+        SELECT id as style_id, name, trim(original_price) as original_price, trim(sale_price) as sale_price, 
+        defaultStyle as "default?",
 
           (SELECT json_agg( row_to_json(photo)) as photos
             FROM
@@ -87,8 +88,7 @@ SELECT json_agg(row_to_json(results)) as results
               )
 
         FROM styles
-        WHERE product_id = ${product_id}
+        WHERE product_id = 3
       ) results
-
 
       

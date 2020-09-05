@@ -4,9 +4,10 @@ const fs = require("fs");
 // *** Products Table Generation ***
 const generateStreamProducts = (productRecords) => {
   let start = Date.now();
-  const writeStream = fs.createWriteStream("./csv_files/oneMillion/productsData1M.csv");
+  const writeStream = fs.createWriteStream("./csv_files/productLoadTest.csv");
   writeStream.write(
-    "name, slogan, description, category, default_price\n",
+    // "name, slogan, description, category, default_price\n",
+    "product_id\n",
     "utf8"
   );
 
@@ -16,14 +17,15 @@ const generateStreamProducts = (productRecords) => {
     function write() {
       let ok = true;
       do {
-        i -= 1;
-        // id += 1;
-        let name = faker.commerce.productName();
-        let slogan = faker.company.catchPhrase();
-        let description = faker.commerce.productDescription();
-        let category = faker.commerce.department();
-        let default_price = faker.commerce.price();
-        let productsData = `"${name}", "${slogan}", "${description}", "${category}", "${default_price}"\n`;
+        i -= 5000;
+        id += 5000;
+        // let name = faker.commerce.productName();
+        // let slogan = faker.company.catchPhrase();
+        // let description = faker.commerce.productDescription();
+        // let category = faker.commerce.department();
+        // let default_price = faker.commerce.price();
+        // let productsData = `"${name}", "${slogan}", "${description}", "${category}", "${default_price}"\n`;
+        let productsData = `"${id}"\n`;
         if (i === 0) {
           writer.write(productsData, encoding, callback);
         } else {
@@ -50,7 +52,9 @@ const generateStreamProducts = (productRecords) => {
 // *** Features Table Generation ***
 const generateStreamFeatures = (productRecords) => {
   let start = Date.now();
-  const writeStream = fs.createWriteStream("./csv_files/oneMillion/featuresData1M.csv");
+  const writeStream = fs.createWriteStream(
+    "./csv_files/oneMillion/featuresData1M.csv"
+  );
   writeStream.write("feature, value, product_id\n", "utf8");
 
   function writeAllData(writer, encoding, callback) {
@@ -92,7 +96,9 @@ const generateStreamFeatures = (productRecords) => {
 const generateStreamStyles = (productRecords) => {
   let start = Date.now();
   let stylesCount = 0;
-  const writeStream = fs.createWriteStream("./csv_files/oneMillion/stylesData1M.csv");
+  const writeStream = fs.createWriteStream(
+    "./csv_files/oneMillion/stylesData1M.csv"
+  );
   writeStream.write(
     "name, original_price, sale_price, defaultStyle, product_id\n",
     "utf8"
@@ -152,7 +158,9 @@ const generateStreamStyles = (productRecords) => {
 // *** Photos Table Generation ***
 const generateStreamPhotos = (productRecords) => {
   let start = Date.now();
-  const writeStream = fs.createWriteStream("./csv_files/oneMillion/photosData1M.csv");
+  const writeStream = fs.createWriteStream(
+    "./csv_files/oneMillion/photosData1M.csv"
+  );
   writeStream.write("thumbnail_url, url, style_id\n", "utf8");
 
   function writeAllData(writer, encoding, callback) {
@@ -198,7 +206,9 @@ const generateStreamPhotos = (productRecords) => {
 // *** Skus Table Generation ***
 const generateStreamSkus = (productRecords) => {
   let start = Date.now();
-  const writeStream = fs.createWriteStream("./csv_files/oneMillion/skusData1M.csv");
+  const writeStream = fs.createWriteStream(
+    "./csv_files/oneMillion/skusData1M.csv"
+  );
   writeStream.write("size, quantity, style_id\n", "utf8");
   let options = [
     ["XS", "S", "M", "L", "XL", "XXL", "XXL"],
@@ -232,7 +242,9 @@ const generateStreamSkus = (productRecords) => {
         let skusData = "";
         for (let j = 0; j < options[skuOption].length; j++) {
           let quantity = parseInt(Math.random() * 15);
-          skusData = skusData.concat(`"${options[skuOption][j]}", "${quantity}", ${id}\n`);
+          skusData = skusData.concat(
+            `"${options[skuOption][j]}", "${quantity}", ${id}\n`
+          );
         }
 
         optionsGroupCount++;
@@ -274,7 +286,7 @@ const generateStreamSkus = (productRecords) => {
 // ****************************************************************************
 // ****************************************************************************
 // RUN DATA GENERATION FUNCTIONS
-let totalProducts = 1000000;
+let totalProducts = 10000000;
 generateStreamProducts(totalProducts);
 // generateStreamFeatures(totalProducts);
 // generateStreamStyles(totalProducts);

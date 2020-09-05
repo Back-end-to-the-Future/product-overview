@@ -30,3 +30,5 @@ server/dbPass.js
 # CSV Data Files
 csv_files
 
+# New Relic
+newrelic.js

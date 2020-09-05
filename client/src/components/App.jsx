@@ -17,7 +17,7 @@ const App = () => {
   const [product, setProduct] = useState({});
   const [productStyles, setProductStyles] = useState([]);
   const [currentStyle, setCurrentStyle] = useState({});
-  const [productId, setProductId] = useState(8);
+  const [productId, setProductId] = useState(parseInt(Math.random() * 10000000 + 1));
   const [currentStyleIndex, setCurrentStyleIndex] = useState(0);
   const [currentStyleId, setCurrentStyleId] = useState(3);
   const [originalPrice, setOriginalPrice] = useState(null);
