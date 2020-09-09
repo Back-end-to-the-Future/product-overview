@@ -32,3 +32,6 @@ csv_files
 
 # New Relic
 newrelic.js
+
+# EC2
+sdc-bef-overview.pem
