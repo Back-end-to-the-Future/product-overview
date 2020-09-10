@@ -16,7 +16,6 @@ FROM '/Users/andrethomas/overview_module/csv_files/tenMillion/productsData10M.cs
 DELIMITER ','
 CSV HEADER;
 
-
 ALTER TABLE products
   ADD COLUMN id SERIAL PRIMARY KEY;
 ----------------------------------------------------------------------------

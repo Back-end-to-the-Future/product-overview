@@ -88,7 +88,7 @@ SELECT json_agg(row_to_json(results)) as results
               )
 
         FROM styles
-        WHERE product_id = 3
+        WHERE product_id = 10000000
       ) results
 
       

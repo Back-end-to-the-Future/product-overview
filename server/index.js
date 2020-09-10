@@ -10,7 +10,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const { query } = require("./db");
 
-const port = 3333;
+const port = 5000;
 const url = "http://52.26.193.201:3000";
 const prefix = "/ov";
 // const url = 'http://18.224.200.47/';
@@ -46,9 +46,8 @@ app.get(`${prefix}/products/:product_id/`, async (req, res) => {
       FROM products 
       INNER JOIN features
       ON products.id = features.product_id
-      WHERE products.id = $1
-      GROUP BY products.id;`,
-      [product_id]
+      WHERE products.id = ${product_id}
+      GROUP BY products.id;`
     )
     .then((result) => {
       let duration = Date.now() - start;

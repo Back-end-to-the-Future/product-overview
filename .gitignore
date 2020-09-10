@@ -35,3 +35,6 @@ newrelic.js
 
 # EC2
 sdc-bef-overview.pem
+
+# Archive
+Archive.zip

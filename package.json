@@ -10,6 +10,7 @@
   "scripts": {
     "start": "nodemon server/index.js",
     "react-dev": "webpack -d --watch",
+    "react-prod": "webpack -p",
     "test": "jest --coverage",
     "stress": "$(npm bin)/artillery run get-products.yml"
   },
